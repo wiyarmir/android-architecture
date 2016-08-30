@@ -1,13 +1,15 @@
-package com.example.android.architecture.blueprints.todoapp.redux;
+package com.example.android.architecture.blueprints.todoapp.redux.impl;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
+import com.example.android.architecture.blueprints.todoapp.redux.State;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -25,8 +27,12 @@ public class TaskState implements State {
         return new TaskState();
     }
 
-    public static TaskState from(Task todo) {
-        return new TaskState(Collections.singleton(todo));
+    public static TaskState from(Task task) {
+        return new TaskState(Collections.singleton(task));
+    }
+
+    public static TaskState from(List<Task> tasks) {
+        return new TaskState(tasks);
     }
 
     public TaskState() {
