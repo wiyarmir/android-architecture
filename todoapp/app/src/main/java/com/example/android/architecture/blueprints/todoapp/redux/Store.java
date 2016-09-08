@@ -8,7 +8,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 public abstract class Store<A extends Action, S extends State> {
 
-    static public <A extends Action, S extends State> CoreStore<A, S> create(S initialState, Reducer<A, S> reducer) {
+    static public <A extends Action, S extends State> Store<A, S> create(S initialState, Reducer<A, S> reducer) {
         return new CoreStore<>(initialState, reducer);
     }
 
@@ -62,8 +62,8 @@ public abstract class Store<A extends Action, S extends State> {
         }
 
         private void notifyStateChanged() {
-            for (int i = 0, size = subscribers.size(); i < size; i++) {
-                subscribers.get(i).onStateChanged();
+            for (Subscriber subscriber : subscribers) {
+                subscriber.onStateChanged();
             }
         }
     }

@@ -2,6 +2,7 @@ package com.example.android.architecture.blueprints.todoapp.tasks;
 
 import com.example.android.architecture.blueprints.todoapp.ToDoApplication;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepositoryComponent;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.TasksStoreComponent;
 import com.example.android.architecture.blueprints.todoapp.util.FragmentScoped;
 
 import dagger.Component;
@@ -14,8 +15,8 @@ import dagger.Component;
  * scope must be specified. All fragment components use a custom scope for this purpose.
  */
 @FragmentScoped
-@Component(dependencies = TasksRepositoryComponent.class, modules = TasksPresenterModule.class)
+@Component(dependencies = TasksStoreComponent.class, modules = TasksPresenterModule.class)
 public interface TasksComponent {
-	
+
     void inject(TasksActivity activity);
 }

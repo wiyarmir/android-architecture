@@ -21,7 +21,9 @@ import android.support.annotation.Nullable;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource;
-import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository;
+import com.example.android.architecture.blueprints.todoapp.redux.Store;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.TaskActionFactory;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.TaskState;
 
 import javax.inject.Inject;
 
@@ -29,7 +31,7 @@ import javax.inject.Inject;
  * Listens to user actions from the UI ({@link AddEditTaskFragment}), retrieves the data and
  * updates
  * the UI as required.
- * <p />
+ * <p/>
  * By marking the constructor with {@code @Inject}, Dagger injects the dependencies required to
  * create an instance of the AddEditTaskPresenter (if it fails, it emits a compiler error). It uses
  * {@link AddEditTaskPresenterModule} to do so.
@@ -42,8 +44,9 @@ final class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
         TasksDataSource.GetTaskCallback {
 
     @NonNull
-    private final TasksDataSource mTasksRepository;
+    private final TaskActionFactory mTaskActionFactory;
 
+    private Store<TaskActionFactory.Action, TaskState> mStore;
     @NonNull
     private final AddEditTaskContract.View mAddTaskView;
 
@@ -55,10 +58,12 @@ final class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
      * with {@code @Nullable} values.
      */
     @Inject
-    AddEditTaskPresenter(@Nullable String taskId, TasksRepository tasksRepository,
-            AddEditTaskContract.View addTaskView) {
+    AddEditTaskPresenter(@Nullable String taskId, @NonNull TaskActionFactory taskActionFactory,
+                         @NonNull Store<TaskActionFactory.Action, TaskState> taskStore,
+                         @NonNull AddEditTaskContract.View addTaskView) {
         mTaskId = taskId;
-        mTasksRepository = tasksRepository;
+        mTaskActionFactory = taskActionFactory;
+        mStore = taskStore;
         mAddTaskView = addTaskView;
     }
 
@@ -92,7 +97,7 @@ final class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
         if (isNewTask()) {
             throw new RuntimeException("populateTask() was called but task is new.");
         }
-        mTasksRepository.getTask(mTaskId, this);
+        mStore.getState().find(mTaskId);
     }
 
     @Override
@@ -117,11 +122,10 @@ final class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
     }
 
     private void createTask(String title, String description) {
-        Task newTask = new Task(title, description);
-        if (newTask.isEmpty()) {
+        if (title == null && description == null) {
             mAddTaskView.showEmptyTaskError();
         } else {
-            mTasksRepository.saveTask(newTask);
+            mTaskActionFactory.add(title, description);
             mAddTaskView.showTasksList();
         }
     }
@@ -130,7 +134,8 @@ final class AddEditTaskPresenter implements AddEditTaskContract.Presenter,
         if (isNewTask()) {
             throw new RuntimeException("updateTask() was called but task is new.");
         }
-        mTasksRepository.saveTask(new Task(title, description, mTaskId));
+        mTaskActionFactory.delete(mTaskId);
+        mTaskActionFactory.add(title,description);new Task(title, description, mTaskId));
         mAddTaskView.showTasksList(); // After an edit, go back to the list.
     }
 }

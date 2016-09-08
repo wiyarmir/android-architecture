@@ -2,28 +2,28 @@ package com.example.android.architecture.blueprints.todoapp.redux.impl;
 
 import com.example.android.architecture.blueprints.todoapp.data.Task;
 import com.example.android.architecture.blueprints.todoapp.redux.Reducer;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.TaskActionFactory.Action;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class TaskReducer implements Reducer<ActionFactory.Action, TaskState> {
+public class TaskReducer implements Reducer<Action, TaskState> {
     @Override
-    public TaskState reduce(ActionFactory.Action action, TaskState state) {
+    public TaskState reduce(Action action, TaskState state) {
         switch (action.getType()) {
-            case ActionFactory.Action.ADD:
+            case Action.ADD:
                 return state.add(new Task(action.getTitle(), action.getDescription()));
 
-            case ActionFactory.Action.DELETE:
+            case Action.DELETE:
                 return state.remove(state.find(action.getId()));
 
-            case ActionFactory.Action.COMPLETE:
+            case Action.COMPLETE:
                 final Task taskCompleted = state.find(action.getId());
-                return state
-                    .remove(taskCompleted)
-                    .add(new Task(taskCompleted.getTitle(), taskCompleted.getDescription(), taskCompleted.getId(), action.isCompleted()));
+                return state.remove(taskCompleted)
+                        .add(new Task(taskCompleted.getTitle(), taskCompleted.getDescription(), taskCompleted.getId(), action.isCompleted()));
 
-            case ActionFactory.Action.COMPLETE_ALL:
+            case Action.COMPLETE_ALL:
                 final Set<Task> todoListToComplete = state.getTasks();
                 final List<Task> completedList = new ArrayList<>(todoListToComplete.size());
 
@@ -32,7 +32,7 @@ public class TaskReducer implements Reducer<ActionFactory.Action, TaskState> {
                 }
                 return TaskState.from(completedList);
 
-            case ActionFactory.Action.CLEAR_ALL_COMPLETED:
+            case Action.CLEAR_ALL_COMPLETED:
                 final Set<Task> todoListToClean = state.getTasks();
                 final List<Task> clearedList = new ArrayList<>(todoListToClean.size());
 
@@ -42,6 +42,11 @@ public class TaskReducer implements Reducer<ActionFactory.Action, TaskState> {
                     }
                 }
                 return TaskState.from(clearedList);
+            case Action.UPDATE:
+                state.remove(state.find(action.getId()))
+                .add(new Task());
+
+                return TaskState.
             default:
                 return state;
         }

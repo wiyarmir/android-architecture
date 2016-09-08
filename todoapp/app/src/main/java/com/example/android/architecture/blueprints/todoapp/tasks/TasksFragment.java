@@ -42,6 +42,10 @@ import android.widget.TextView;
 import com.example.android.architecture.blueprints.todoapp.R;
 import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTaskActivity;
 import com.example.android.architecture.blueprints.todoapp.data.Task;
+import com.example.android.architecture.blueprints.todoapp.redux.Store;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.TaskActionFactory;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.TaskReducer;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.TaskState;
 import com.example.android.architecture.blueprints.todoapp.taskdetail.TaskDetailActivity;
 
 import java.util.ArrayList;
@@ -126,7 +130,7 @@ public class TasksFragment extends Fragment implements TasksContract.View {
 
         // Set up floating action button
         FloatingActionButton fab =
-                (FloatingActionButton) getActivity().findViewById(R.id.fab_add_task);
+            (FloatingActionButton) getActivity().findViewById(R.id.fab_add_task);
 
         fab.setImageResource(R.drawable.ic_add);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -138,11 +142,11 @@ public class TasksFragment extends Fragment implements TasksContract.View {
 
         // Set up progress indicator
         final ScrollChildSwipeRefreshLayout swipeRefreshLayout =
-                (ScrollChildSwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
+            (ScrollChildSwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
         swipeRefreshLayout.setColorSchemeColors(
-                ContextCompat.getColor(getActivity(), R.color.colorPrimary),
-                ContextCompat.getColor(getActivity(), R.color.colorAccent),
-                ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark)
+            ContextCompat.getColor(getActivity(), R.color.colorPrimary),
+            ContextCompat.getColor(getActivity(), R.color.colorAccent),
+            ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark)
         );
         // Set the scrolling view in the custom SwipeRefreshLayout.
         swipeRefreshLayout.setScrollUpChild(listView);
@@ -233,7 +237,7 @@ public class TasksFragment extends Fragment implements TasksContract.View {
             return;
         }
         final SwipeRefreshLayout srl =
-                (SwipeRefreshLayout) getView().findViewById(R.id.refresh_layout);
+            (SwipeRefreshLayout) getView().findViewById(R.id.refresh_layout);
 
         // Make sure setRefreshing() is called after the layout is done with everything else.
         srl.post(new Runnable() {
@@ -255,27 +259,27 @@ public class TasksFragment extends Fragment implements TasksContract.View {
     @Override
     public void showNoActiveTasks() {
         showNoTasksViews(
-                getResources().getString(R.string.no_tasks_active),
-                R.drawable.ic_check_circle_24dp,
-                false
+            getResources().getString(R.string.no_tasks_active),
+            R.drawable.ic_check_circle_24dp,
+            false
         );
     }
 
     @Override
     public void showNoTasks() {
         showNoTasksViews(
-                getResources().getString(R.string.no_tasks_all),
-                R.drawable.ic_assignment_turned_in_24dp,
-                false
+            getResources().getString(R.string.no_tasks_all),
+            R.drawable.ic_assignment_turned_in_24dp,
+            false
         );
     }
 
     @Override
     public void showNoCompletedTasks() {
         showNoTasksViews(
-                getResources().getString(R.string.no_tasks_completed),
-                R.drawable.ic_verified_user_24dp,
-                false
+            getResources().getString(R.string.no_tasks_completed),
+            R.drawable.ic_verified_user_24dp,
+            false
         );
     }
 
@@ -405,10 +409,11 @@ public class TasksFragment extends Fragment implements TasksContract.View {
             completeCB.setChecked(task.isCompleted());
             if (task.isCompleted()) {
                 rowView.setBackgroundDrawable(viewGroup.getContext()
-                        .getResources().getDrawable(R.drawable.list_completed_touch_feedback));
-            } else {
+                    .getResources().getDrawable(R.drawable.list_completed_touch_feedback));
+            }
+            else {
                 rowView.setBackgroundDrawable(viewGroup.getContext()
-                        .getResources().getDrawable(R.drawable.touch_feedback));
+                    .getResources().getDrawable(R.drawable.touch_feedback));
             }
 
             completeCB.setOnClickListener(new View.OnClickListener() {
@@ -416,7 +421,8 @@ public class TasksFragment extends Fragment implements TasksContract.View {
                 public void onClick(View v) {
                     if (!task.isCompleted()) {
                         mItemListener.onCompleteTaskClick(task);
-                    } else {
+                    }
+                    else {
                         mItemListener.onActivateTaskClick(task);
                     }
                 }

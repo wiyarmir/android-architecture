@@ -5,10 +5,10 @@ import com.google.common.base.MoreObjects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class ActionFactory {
+public class TaskActionFactory {
     private final Store<Action, TaskState> store;
 
-    public ActionFactory(Store<Action, TaskState> store) {
+    public TaskActionFactory(Store<Action, TaskState> store) {
         this.store = store;
     }
 
@@ -43,6 +43,7 @@ public class ActionFactory {
         public static final String COMPLETE = "COMPLETE";
         public static final String COMPLETE_ALL = "COMPLETE_ALL";
         public static final String CLEAR_ALL_COMPLETED = "CLEAR_ALL_COMPLETED";
+        public static final String UPDATE = "UPDATE";
 
         private final String type;
         private final String title;

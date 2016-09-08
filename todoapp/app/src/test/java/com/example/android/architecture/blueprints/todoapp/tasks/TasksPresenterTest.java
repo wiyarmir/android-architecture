@@ -64,7 +64,7 @@ public class TasksPresenterTest {
         MockitoAnnotations.initMocks(this);
 
         // Get a reference to the class under test
-        mTasksPresenter = new TasksPresenter(mTasksRepository, mTasksView);
+        mTasksPresenter = new TasksPresenter(mTasksView);
 
         // The presenter won't update the view unless it's active.
         when(mTasksView.isActive()).thenReturn(true);

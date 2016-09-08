@@ -6,6 +6,8 @@ import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTa
 import com.example.android.architecture.blueprints.todoapp.data.source.DaggerTasksRepositoryComponent;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepositoryComponent;
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepositoryModule;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.DaggerTasksStoreComponent;
+import com.example.android.architecture.blueprints.todoapp.redux.impl.TasksStoreComponent;
 import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsComponent;
 import com.example.android.architecture.blueprints.todoapp.taskdetail.TaskDetailComponent;
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksComponent;
@@ -28,6 +30,7 @@ import com.example.android.architecture.blueprints.todoapp.tasks.TasksComponent;
 public class ToDoApplication extends Application {
 
     private TasksRepositoryComponent mRepositoryComponent;
+    private TasksStoreComponent mStoreComponent;
 
     @Override
     public void onCreate() {
@@ -37,10 +40,14 @@ public class ToDoApplication extends Application {
                 .applicationModule(new ApplicationModule((getApplicationContext())))
                 .tasksRepositoryModule(new TasksRepositoryModule()).build();
 
+        mStoreComponent = DaggerTasksStoreComponent.create();
     }
 
     public TasksRepositoryComponent getTasksRepositoryComponent() {
         return mRepositoryComponent;
     }
 
+    public TasksStoreComponent getStoreComponent() {
+        return mStoreComponent;
+    }
 }
